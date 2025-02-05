@@ -4,6 +4,7 @@ import RealityKitContent
 
 struct ImmersiveView: View {
     @State private var originalPositions: [Entity: SIMD3<Float>] = [:]
+    @State private var angle = Angle(degrees: 0.0)
 
     var body: some View {
         RealityView { content in
@@ -18,10 +19,10 @@ struct ImmersiveView: View {
             
             // Create the table
             let table = ModelEntity(
-                mesh: .generateBox(width: 2, height: 0.1, depth: 2), // Adjust dimensions as needed
+                mesh: .generateBox(width: 0.5, height: 1, depth: 0.5), // Adjust dimensions as needed
                 materials: [SimpleMaterial(color: .brown, isMetallic: false)] // Wooden material
             )
-            table.position = SIMD3(0, 0.5, -2) // Position the table
+            table.position = SIMD3(0, 0, -1) // Position the table
             table.generateCollisionShapes(recursive: false)
             table.components[PhysicsBodyComponent.self] = .init(massProperties: .default, mode: .static)
             content.add(table)
@@ -30,8 +31,8 @@ struct ImmersiveView: View {
             if let potModel = try? await Entity(named: "pot"),
                let pot = potModel.children.first?.children.first {
                 
-                pot.scale = [10, 10, 10] // Lock scale to 10
-                pot.position = SIMD3(-0.5, 0.6, -2) // Position on top of the table
+                pot.scale = [1, 1, 1] // Lock scale to 10
+                pot.position = SIMD3(-0.1, 0.5, -1) // Position on top of the table
                 pot.generateCollisionShapes(recursive: false)
 
                 // Enable interaction
@@ -50,8 +51,8 @@ struct ImmersiveView: View {
             if let birdModel = try? await Entity(named: "bird"),
                let bird = birdModel.children.first?.children.first {
                 
-                bird.scale = [5, 5, 5] // Lock scale to 5
-                bird.position = SIMD3(0.5, 0.6, -2) // Position on top of the table
+                bird.scale = [1, 1, 1] // Lock scale to 5
+                bird.position = SIMD3(0.1, 0.5, -1) // Position on top of the table
                 bird.generateCollisionShapes(recursive: false)
 
                 // Enable interaction
@@ -67,8 +68,9 @@ struct ImmersiveView: View {
             }
         }
         .gesture(dragGesture)
+        .rotationEffect(angle)
     }
-
+    
     var dragGesture: some Gesture {
         DragGesture()
             .targetedToAnyEntity()
