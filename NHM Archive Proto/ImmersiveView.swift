@@ -27,23 +27,23 @@ struct ImmersiveView: View {
             content.add(table)
             
             // Load the mask model
-            if let maskModel = try? await Entity(named: "mask"),
-               let mask = maskModel.children.first?.children.first {
+            if let potModel = try? await Entity(named: "pot"),
+               let pot = potModel.children.first?.children.first {
                 
-                mask.scale = [10, 10, 10] // Lock scale to 10
-                mask.position = SIMD3(-0.5, 0.6, -2) // Position on top of the table
-                mask.generateCollisionShapes(recursive: false)
+                pot.scale = [10, 10, 10] // Lock scale to 10
+                pot.position = SIMD3(-0.5, 0.6, -2) // Position on top of the table
+                pot.generateCollisionShapes(recursive: false)
 
                 // Enable interaction
-                mask.components.set(InputTargetComponent())
-                mask.components[PhysicsBodyComponent.self] = .init(
+                pot.components.set(InputTargetComponent())
+                pot.components[PhysicsBodyComponent.self] = .init(
                     massProperties: .default,
                     material: .generate(staticFriction: 0.8, dynamicFriction: 0.5, restitution: 0), // No bouncing
                     mode: .kinematic // Start in kinematic mode to prevent physics interactions
                 )
 
-                originalPositions[mask] = mask.position
-                content.add(mask)
+                originalPositions[pot] = pot.position
+                content.add(pot)
             }
             
             // Load the bird model
